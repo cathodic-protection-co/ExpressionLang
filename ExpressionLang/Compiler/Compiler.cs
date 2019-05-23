@@ -32,22 +32,74 @@ namespace ExpressionLang.Compiler
 
         Expression ParseWholeExpression()
         {
-            throw new NotImplementedException();
+            Expression expr = ParseExpression();
+            if (Accept(TokenType.EndOfFile))
+                return expr;
+            else
+                throw new Exception("End of file not reached");
         }
 
         Expression ParseExpression()
         {
-            throw new NotImplementedException();
+            Expression left = ParseLogicalTerm();
+            if (Accept(TokenType.LogicalOr))
+            {
+                Expression right = ParseLogicalFactor();
+                if (left is IExpression<bool> && right is IExpression<bool>)
+                    return new OrExpression((IExpression<bool>)left, (IExpression<bool>)right);
+                else
+                    throw new Exception($"Can't logical or on {left} & {right}");
+            }
+            else
+            {
+                return left;
+            }
         }
 
         Expression ParseLogicalTerm()
         {
-            throw new NotImplementedException();
+            Expression left = ParseLogicalFactor();
+            if (Accept(TokenType.LogicalAnd))
+            {
+                Expression right = ParseLogicalFactor();
+                if (left is IExpression<bool> && right is IExpression<bool>)
+                    return new AndExpression((IExpression<bool>)left, (IExpression<bool>)right);
+                else
+                    throw new Exception($"Can't logical and on {left} & {right}");
+            }
+            else
+            {
+                return left;
+            }
         }
 
         Expression ParseLogicalFactor()
         {
-            throw new NotImplementedException();
+            Expression left = ParseEqualityTerm();
+            if (Accept(TokenType.Equals))
+            {
+                Expression right = ParseEqualityTerm();
+                if (left is IExpression<int>)
+                    return new IntEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                else if (left is IExpression<int>)
+                    return new FloatEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                else
+                    throw new Exception("Invalid Type");
+            }
+            else if(Accept(TokenType.NotEquals))
+            {
+                Expression right = ParseEqualityTerm();
+                if (left is IExpression<int>)
+                    return new IntNotEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                else if (left is IExpression<int>)
+                    return new FloatNotEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                else
+                    throw new Exception("Invalid Type");
+            }
+            else
+            {
+                return left;
+            }
         }
 
         Expression ParseEqualityTerm()

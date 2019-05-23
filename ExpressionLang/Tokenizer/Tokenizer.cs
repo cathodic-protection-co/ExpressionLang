@@ -66,7 +66,11 @@ namespace ExpressionLang.Tokenizer
                         return new FloatToken(buffer, lineNumber, columnNumber);
                     case TokenType.Ident:
                         return new IdentToken(buffer, lineNumber, columnNumber);
-                    case TokenType.Operator:
+                    case TokenType.Addition:
+                    case TokenType.Subtraction:
+                    case TokenType.Multiplication:
+                    case TokenType.Division:
+                    case TokenType.Modulo:
                         return new OperatorToken(buffer, lineNumber, columnNumber);
                     default:
                         throw new Exception($"Invalid token type at: {lineNumber}:{columnNumber}");
