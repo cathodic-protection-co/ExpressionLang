@@ -1,4 +1,5 @@
 ﻿using ExpressionLang.Compiler.Expressions;
+using ExpressionLang.Compiler.Expressions.Comparison;
 using ExpressionLang.Tokenizer;
 using ExpressionLang.Tokenizer.Tokens;
 using System;
@@ -51,7 +52,56 @@ namespace ExpressionLang.Compiler
 
         Expression ParseEqualityTerm()
         {
-            throw new NotImplementedException();
+            Expression left = ParseComparisonTerm();
+            while (Peek(TokenType.GreaterThan, TokenType.LessThan, TokenType.GreaterThanEquals, TokenType.LessThanEquals))
+            {
+                if (Accept(TokenType.GreaterThan))
+                {
+                    Expression right = ParseComparisonTerm();
+                    if (left is IExpression<int>)
+                        return new IntGreaterThanExpression((IExpression<int>)left, (IExpression<int>)right);
+                    else if (left is IExpression<float>)
+                        return new FloatGreaterThanExpression((IExpression<float>)left, (IExpression<float>)right);
+                    else
+                        throw new Exception("Invalid type");
+                }
+                else if (Accept(TokenType.LessThan))
+                {
+                    Expression right = ParseComparisonTerm();
+                    if (left is IExpression<int>)
+                        return new IntLessThanExpression((IExpression<int>)left, (IExpression<int>)right);
+                    else if (left is IExpression<float>)
+                        return new FloatLessThanExpression((IExpression<float>)left, (IExpression<float>)right);
+                    else
+                        throw new Exception("Invalid type");
+                }
+                else if (Accept(TokenType.GreaterThanEquals))
+                {
+                    Expression right = ParseComparisonTerm();
+                    if (left is IExpression<int>)
+                        return new IntGreaterThanEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                    else if (left is IExpression<float>)
+                        return new FloatGreaterThanEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                    else
+                        throw new Exception("Invalid type");
+                }
+                else if (Accept(TokenType.LessThanEquals))
+                {
+                    Expression right = ParseComparisonTerm();
+                    if (left is IExpression<int>)
+                        return new IntLessThanEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                    else if (left is IExpression<float>)
+                        return new FloatLessThanEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                    else
+                        throw new Exception("Invalid type");
+                }
+                else
+                {
+                    return left;
+                }
+            }
+
+            return left;
         }
 
         Expression ParseComparisonTerm()
