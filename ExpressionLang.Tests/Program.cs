@@ -14,7 +14,7 @@ namespace ExpressionLang.Tests
             // Test stream
             // Foo = 10.5
             // Bar = 20
-            string test = "10 + foo > 20 and 10 + 20 == 30";
+            string test = "10 + 10 == 20";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 
@@ -29,7 +29,7 @@ namespace ExpressionLang.Tests
             Tokenizer.AddTokenDefinition(TokenType.LogicalAnd, @"&&");
             Tokenizer.AddTokenDefinition(TokenType.LogicalAnd, @"and");
             Tokenizer.AddTokenDefinition(TokenType.Ident, "[a-zA-Z][a-zA-Z0-9]+");
-            Tokenizer.AddTokenDefinition(TokenType.Int, "(-)?[0-9]+");
+            //Tokenizer.AddTokenDefinition(TokenType.Int, "(-)?[0-9]+");
             Tokenizer.AddTokenDefinition(TokenType.Float, @"(-)?[0-9]+(\.[0-9]+)?(e\+[0-9]+)?");
             Tokenizer.AddTokenDefinition(TokenType.Equals, @"==");
             Tokenizer.AddTokenDefinition(TokenType.NotEquals, @"!=");

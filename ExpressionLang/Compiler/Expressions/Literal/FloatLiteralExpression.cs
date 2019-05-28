@@ -6,27 +6,19 @@ using System.Text;
 
 namespace ExpressionLang.Compiler.Expressions.Literal
 {
-    public class FloatLiteralExpression : Expression, IExpression<float>
+    public class FloatLiteralExpression : LiteralExpression, IExpression<float>
     {
         private float Value { get; }
 
         public FloatLiteralExpression(IToken token)
+            : base (token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber)
         {
-            StartLine = token.LineNumber;
-            StartColumn = token.ColumnNumber;
-            EndLine = token.LineNumber;
-            EndColumn = token.ColumnNumber;
-
             Value = float.Parse(token.Text);
         }
 
         public FloatLiteralExpression(float val, int startLine, int startColumn, int endLine, int endColumn)
+            : base (startLine, startColumn, endLine, endColumn)
         {
-            StartLine = startLine;
-            StartColumn = startColumn;
-            EndLine = endLine;
-            EndColumn = endColumn;
-
             Value = val;
         }
 

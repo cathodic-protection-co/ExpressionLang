@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExpressionLang.Compiler.Expressions
+namespace ExpressionLang.Compiler.Expressions.Comparison
 {
-    public class NotExpression : Expression, IExpression<bool>
+    public class NotExpression : UnaryExpression, IExpression<bool>
     {
         public NotExpression(Expression expression)
+            : base(0, 0, 0, 0)
         {
             // Something
         }

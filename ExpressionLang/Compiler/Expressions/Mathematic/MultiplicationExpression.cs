@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExpressionLang.Compiler.Expressions
+namespace ExpressionLang.Compiler.Expressions.Mathematic
 {
-    public abstract class MultiplicationExpression<T> : Expression, IExpression<T>
+    public abstract class MultiplicationExpression<T> : BinaryExpression, IExpression<T>
     {
         internal IExpression<T> Left { get; }
         internal IExpression<T> Right { get; }
 
         public MultiplicationExpression(IExpression<T> left, IExpression<T> right)
+            : base (left.StartLine, left.StartColumn, right.EndLine, right.EndColumn)
         {
             Left = left;
             Right = right;

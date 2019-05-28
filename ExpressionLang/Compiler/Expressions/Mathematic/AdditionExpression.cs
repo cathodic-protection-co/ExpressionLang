@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExpressionLang.Compiler.Expressions
+namespace ExpressionLang.Compiler.Expressions.Mathematic
 {
-    public abstract class AdditionExpression<T> : Expression, IExpression<T>
+    public abstract class AdditionExpression<T> : BinaryExpression, IExpression<T>
     {
         internal IExpression<T> Left { get; }
         internal IExpression<T> Right { get; }
 
         public AdditionExpression(IExpression<T> left, IExpression<T> right)
+            : base (left.StartLine, left.StartColumn, right.EndLine, right.EndColumn)
         {
             Left = left;
             Right = right;

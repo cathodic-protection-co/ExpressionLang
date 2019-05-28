@@ -7,5 +7,11 @@ namespace ExpressionLang.Compiler.Expressions
     public interface IExpression<T>
     {
         T Evaluate();
+
+        int StartLine { get; }
+        int StartColumn { get; }
+
+        int EndLine { get; }
+        int EndColumn { get; }
     }
 }

@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExpressionLang.Compiler.Expressions
+namespace ExpressionLang.Compiler.Expressions.Mathematic
 {
-    public abstract class SubtractionExpression<T> : Expression, IExpression<T>
+    public abstract class SubtractionExpression<T> : BinaryExpression, IExpression<T>
     {
         internal IExpression<T> Left { get; }
         internal IExpression<T> Right { get; }
 
         public SubtractionExpression(IExpression<T> left, IExpression<T> right)
+            : base (left.StartLine, left.StartColumn, left.EndLine, left.EndColumn)
         {
             Left = left;
             Right = right;

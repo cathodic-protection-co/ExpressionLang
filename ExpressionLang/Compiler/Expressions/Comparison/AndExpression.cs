@@ -4,12 +4,13 @@ using System.Text;
 
 namespace ExpressionLang.Compiler.Expressions.Comparison
 {
-    public class AndExpression : Expression, IExpression<bool>
+    public class AndExpression : UnaryExpression, IExpression<bool>
     {
         internal IExpression<bool> Left { get; }
         internal IExpression<bool> Right { get; }
 
         public AndExpression(IExpression<bool> left, IExpression<bool> right)
+            : base (left.StartLine, left.StartColumn, right.EndLine, right.EndColumn)
         {
             Left = left;
             Right = right;
@@ -22,7 +23,10 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
 
         public override IExpression<T> As<T>()
         {
-            return (IExpression<T>)this;
+            if (typeof(T) != typeof(bool))
+                throw new Exception($"Can't cast from bool to {typeof(T)} ({StartLine}:{StartColumn}-{EndLine}:{EndColumn})");
+            else
+                return (IExpression<T>)this;
         }
     }
 }

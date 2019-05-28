@@ -1,6 +1,7 @@
 ﻿using ExpressionLang.Compiler.Expressions;
 using ExpressionLang.Compiler.Expressions.Comparison;
 using ExpressionLang.Compiler.Expressions.Literal;
+using ExpressionLang.Compiler.Expressions.Mathematic;
 using ExpressionLang.Tokenizer;
 using ExpressionLang.Tokenizer.Tokens;
 using System;
@@ -117,20 +118,20 @@ namespace ExpressionLang.Compiler
                 Expression right = ParseEqualityTerm();
                 if (left is IExpression<int>)
                     return new IntEqualsExpression(left.As<int>(), right.As<int>());
-                else if (left is IExpression<int>)
+                else if (left is IExpression<float>)
                     return new FloatEqualsExpression(left.As<float>(), right.As<float>());
                 else
-                    throw new Exception("Invalid Type");
+                    throw new Exception($"Can't divide type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
             }
             else if(Accept(TokenType.NotEquals))
             {
                 Expression right = ParseEqualityTerm();
                 if (left is IExpression<int>)
                     return new IntNotEqualsExpression(left.As<int>(), right.As<int>());
-                else if (left is IExpression<int>)
+                else if (left is IExpression<float>)
                     return new FloatNotEqualsExpression(left.As<float>(), right.As<float>());
                 else
-                    throw new Exception("Invalid Type");
+                    throw new Exception($"Can't divide type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
             }
             else
             {
@@ -151,7 +152,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         return new FloatGreaterThanExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't compare type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else if (Accept(TokenType.LessThan))
                 {
@@ -161,7 +162,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         return new FloatLessThanExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't compare type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else if (Accept(TokenType.GreaterThanEquals))
                 {
@@ -171,7 +172,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         return new FloatGreaterThanEqualsExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't compare type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else if (Accept(TokenType.LessThanEquals))
                 {
@@ -181,7 +182,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         return new FloatLessThanEqualsExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't compare type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else
                 {
@@ -205,7 +206,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         left = new FloatAdditionExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't add type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else if (Accept(TokenType.Subtraction))
                 {
@@ -215,7 +216,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         left = new FloatSubtractionExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't subtract type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else
                 {
@@ -238,7 +239,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         left = new FloatMultiplicationExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't multiply type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else if (Accept(TokenType.Division))
                 {
@@ -248,7 +249,7 @@ namespace ExpressionLang.Compiler
                     else if (left is IExpression<float>)
                         left = new FloatDivisionExpression(left.As<float>(), right.As<float>());
                     else
-                        throw new Exception("Invalid type");
+                        throw new Exception($"Can't divide type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
                 }
                 else
                 {
