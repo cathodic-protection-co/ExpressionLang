@@ -22,7 +22,7 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
 
         public override IExpression<T> As<T>()
         {
-            throw new NotImplementedException();
+            return (IExpression<T>)this;
         }
     }
 }

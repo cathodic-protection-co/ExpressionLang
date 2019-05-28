@@ -24,7 +24,7 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
 
         public override IExpression<T> As<T>()
         {
-            throw new NotImplementedException();
+            return (IExpression<T>)this;
         }
 
         public override bool Evaluate() => Left.Evaluate() > Right.Evaluate();
@@ -36,7 +36,7 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
 
         public override IExpression<T> As<T>()
         {
-            throw new NotImplementedException();
+            return (IExpression<T>)this;
         }
 
         public override bool Evaluate() => Left.Evaluate() > Right.Evaluate();
