@@ -4,30 +4,62 @@ using ExpressionLang.Tokenizer;
 using ExpressionLang.Tokenizer.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ExpressionLang.Compiler
 {
     public class Compiler
     {
+        private Stack<IToken> Tokens;
+        public Expression Compile(ICollection<IToken> tokens)
+        {
+            Tokens = new Stack<IToken>(tokens.Reverse());
+            return ParseWholeExpression();
+        }
+
         bool Peek(params TokenType[] tokenTypes)
         {
-            throw new NotImplementedException();
+            IToken token = Tokens.Peek();
+            return tokenTypes.Any(x => x == token.TokenType);
         }
 
         bool Expect(TokenType tokenType)
         {
-            throw new NotImplementedException();
+            IToken token = Tokens.Pop();
+            if (token.TokenType == tokenType)
+                return true;
+            else
+                throw new Exception($"Expected token: {tokenType}, got {token.TokenType}");
         }
 
         bool Accept(TokenType tokenType)
         {
-            throw new NotImplementedException();
+            IToken token;
+            if (Peek(tokenType))
+            {
+                token = Tokens.Pop();
+                return token.TokenType == tokenType;
+            }
+            else
+            {
+                token = null;
+                return false;
+            }
         }
 
         bool Accept(TokenType tokenType, out IToken token)
         {
-            throw new NotImplementedException();
+            if (Peek(tokenType))
+            {
+                token = Tokens.Pop();
+                return token.TokenType == tokenType;
+            }
+            else
+            {
+                token = null;
+                return false;
+            }
         }
 
         Expression ParseWholeExpression()
@@ -158,12 +190,12 @@ namespace ExpressionLang.Compiler
 
         Expression ParseComparisonTerm()
         {
-            Expression left = ParseFactor();
+            Expression left = ParseTerm();
             while (Peek(TokenType.Addition, TokenType.Subtraction))
             {
                 if (Accept(TokenType.Addition))
                 {
-                    Expression right = ParseFactor();
+                    Expression right = ParseTerm();
                     if (left is IExpression<int>)
                         return new IntAdditionExpression((IExpression<int>)left, (IExpression<int>)right);
                     else if (left is IExpression<float>)
@@ -173,7 +205,7 @@ namespace ExpressionLang.Compiler
                 }
                 else if (Accept(TokenType.Subtraction))
                 {
-                    Expression right = ParseFactor();
+                    Expression right = ParseTerm();
                     if (left is IExpression<int>)
                         return new IntSubtractionExpression((IExpression<int>)left, (IExpression<int>)right);
                     else if (left is IExpression<float>)
@@ -239,6 +271,10 @@ namespace ExpressionLang.Compiler
             else if (Accept(TokenType.Float, out token))
             {
                 return new FloatLiteralExpression(token);
+            }
+            else if (Accept(TokenType.Ident, out token))
+            {
+                throw new NotImplementedException();
             }
             else if (Accept(TokenType.OpenBracket))
             {

@@ -1,4 +1,5 @@
-﻿using ExpressionLang.Tokenizer;
+﻿using ExpressionLang.Compiler.Expressions;
+using ExpressionLang.Tokenizer;
 using System;
 using System.IO;
 using System.Text;
@@ -10,7 +11,7 @@ namespace ExpressionLang.Tests
         static void Main(string[] args)
         {
             // Test stream
-            string test = "10 + 10  / 144231 * 223461 variable";
+            string test = "(10 + 10) / 10";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 
@@ -20,13 +21,13 @@ namespace ExpressionLang.Tests
             Tokenizer.AddTokenDefinition(TokenType.Ignored, @" ");
             Tokenizer.AddTokenDefinition(TokenType.NewLine, @"\\n\\r");
             Tokenizer.AddTokenDefinition(TokenType.EndOfFile, "");
-            Tokenizer.AddTokenDefinition(TokenType.Ident, "[a-zA-Z][a-zA-Z0-9]+");
-            Tokenizer.AddTokenDefinition(TokenType.Int, "(-)?[0-9]+");
-            Tokenizer.AddTokenDefinition(TokenType.Float, @"(-)?[0-9]+(\.[0-9]+)?(e\+[0-9]+)?");
             Tokenizer.AddTokenDefinition(TokenType.LogicalOr, @"\|\|");
             Tokenizer.AddTokenDefinition(TokenType.LogicalOr, @"or");
             Tokenizer.AddTokenDefinition(TokenType.LogicalAnd, @"&&");
             Tokenizer.AddTokenDefinition(TokenType.LogicalAnd, @"and");
+            Tokenizer.AddTokenDefinition(TokenType.Ident, "[a-zA-Z][a-zA-Z0-9]+");
+            Tokenizer.AddTokenDefinition(TokenType.Int, "(-)?[0-9]+");
+            Tokenizer.AddTokenDefinition(TokenType.Float, @"(-)?[0-9]+(\.[0-9]+)?(e\+[0-9]+)?");
             Tokenizer.AddTokenDefinition(TokenType.Equals, @"==");
             Tokenizer.AddTokenDefinition(TokenType.NotEquals, @"!=");
             Tokenizer.AddTokenDefinition(TokenType.LessThan, @"<");
@@ -44,8 +45,15 @@ namespace ExpressionLang.Tests
 
             Tokenizer.Tokenize(stream);
 
+            // Tokenizer debug output
             foreach (IToken token in Tokenizer.Tokens)
                 Console.WriteLine($"{token.TokenType}, {token.Text}, {token.LineNumber}:{token.ColumnNumber}");
+
+            Compiler.Compiler compiler = new Compiler.Compiler();
+            Expression expr = compiler.Compile(Tokenizer.Tokens);
+
+            Console.WriteLine();
+            Console.WriteLine($"Expression Output: {(expr as IExpression<int>).Evaluate()}");
 
             Console.ReadLine();
         }

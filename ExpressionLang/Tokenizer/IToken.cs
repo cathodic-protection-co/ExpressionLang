@@ -9,6 +9,7 @@ namespace ExpressionLang.Tokenizer
         EndOfFile,
         NewLine,
         Ignored,
+        Operator,
         Ident,
         Int,
         Float,

@@ -26,6 +26,8 @@ namespace ExpressionLang.Tokenizer
             using (var reader = new StreamReader(stream))
                 while ((token = MatchLongest(reader, "")).TokenType != TokenType.EndOfFile)
                     Tokens.Add(token);
+
+            Tokens.Add(new EndOfFileToken(lineNumber, columnNumber));
         }
 
         private IToken MatchLongest(StreamReader reader, string buffer)
@@ -60,18 +62,41 @@ namespace ExpressionLang.Tokenizer
                         return MatchLongest(reader, "");                            // Recurse (reset buffer / next token)
                     case TokenType.Ignored:
                         return MatchLongest(reader, "");                            // Recurse (reset buffer / next token)
+
+                    // Literals
                     case TokenType.Int:
                         return new IntToken(buffer, lineNumber, columnNumber);
                     case TokenType.Float:
                         return new FloatToken(buffer, lineNumber, columnNumber);
                     case TokenType.Ident:
                         return new IdentToken(buffer, lineNumber, columnNumber);
+
+                    // Operators
                     case TokenType.Addition:
                     case TokenType.Subtraction:
                     case TokenType.Multiplication:
                     case TokenType.Division:
                     case TokenType.Modulo:
-                        return new OperatorToken(buffer, lineNumber, columnNumber);
+                        return new OperatorToken(buffer, lineNumber, columnNumber, (TokenType)pair?.Value.TokenType);
+
+                    // Comparitors
+                    case TokenType.GreaterThan:
+                    case TokenType.GreaterThanEquals:
+                    case TokenType.LessThan:
+                    case TokenType.LessThanEquals:
+                    case TokenType.Equals:
+                    case TokenType.NotEquals:
+                        return new ComparitorToken(buffer, lineNumber, columnNumber, (TokenType)pair?.Value.TokenType);
+
+                    case TokenType.LogicalAnd:
+                    case TokenType.LogicalOr:
+                        return new LogicalToken(buffer, lineNumber, columnNumber, (TokenType)pair?.Value.TokenType);
+
+                    case TokenType.OpenBracket:
+                        return new OpenBracketToken(buffer, lineNumber, columnNumber);
+                    case TokenType.CloseBracket:
+                        return new CloseBracketToken(buffer, lineNumber, columnNumber);
+
                     default:
                         throw new Exception($"Invalid token type at: {lineNumber}:{columnNumber}");
                 }
