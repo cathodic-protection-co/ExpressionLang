@@ -25,6 +25,11 @@ namespace ExpressionLang.Compiler.Expressions
 
         }
 
+        public override IExpression<T> As<T>()
+        {
+            return (IExpression<T>)this;
+        }
+
         public override int Evaluate()
         {
             return Left.Evaluate() * Right.Evaluate();
@@ -36,6 +41,11 @@ namespace ExpressionLang.Compiler.Expressions
         public FloatMultiplicationExpression(IExpression<float> left, IExpression<float> right) : base (left, right)
         {
 
+        }
+
+        public override IExpression<T> As<T>()
+        {
+            return (IExpression<T>)this;
         }
 
         public override float Evaluate()

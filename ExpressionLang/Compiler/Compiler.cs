@@ -1,5 +1,6 @@
 ﻿using ExpressionLang.Compiler.Expressions;
 using ExpressionLang.Compiler.Expressions.Comparison;
+using ExpressionLang.Compiler.Expressions.Literal;
 using ExpressionLang.Tokenizer;
 using ExpressionLang.Tokenizer.Tokens;
 using System;
@@ -12,9 +13,12 @@ namespace ExpressionLang.Compiler
     public class Compiler
     {
         private Stack<IToken> Tokens;
-        public Expression Compile(ICollection<IToken> tokens)
+        private IDictionary<string, float> Variables;
+        public Expression Compile(ICollection<IToken> tokens, IDictionary<string, float> variables)
         {
             Tokens = new Stack<IToken>(tokens.Reverse());
+            Variables = variables;
+
             return ParseWholeExpression();
         }
 
@@ -78,7 +82,7 @@ namespace ExpressionLang.Compiler
             {
                 Expression right = ParseLogicalFactor();
                 if (left is IExpression<bool> && right is IExpression<bool>)
-                    return new OrExpression((IExpression<bool>)left, (IExpression<bool>)right);
+                    return new OrExpression(left.As<bool>(), right.As<bool>());
                 else
                     throw new Exception($"Can't logical or on {left} & {right}");
             }
@@ -95,7 +99,7 @@ namespace ExpressionLang.Compiler
             {
                 Expression right = ParseLogicalFactor();
                 if (left is IExpression<bool> && right is IExpression<bool>)
-                    return new AndExpression((IExpression<bool>)left, (IExpression<bool>)right);
+                    return new AndExpression(left.As<bool>(), right.As<bool>());
                 else
                     throw new Exception($"Can't logical and on {left} & {right}");
             }
@@ -112,9 +116,9 @@ namespace ExpressionLang.Compiler
             {
                 Expression right = ParseEqualityTerm();
                 if (left is IExpression<int>)
-                    return new IntEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                    return new IntEqualsExpression(left.As<int>(), right.As<int>());
                 else if (left is IExpression<int>)
-                    return new FloatEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                    return new FloatEqualsExpression(left.As<float>(), right.As<float>());
                 else
                     throw new Exception("Invalid Type");
             }
@@ -122,9 +126,9 @@ namespace ExpressionLang.Compiler
             {
                 Expression right = ParseEqualityTerm();
                 if (left is IExpression<int>)
-                    return new IntNotEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                    return new IntNotEqualsExpression(left.As<int>(), right.As<int>());
                 else if (left is IExpression<int>)
-                    return new FloatNotEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                    return new FloatNotEqualsExpression(left.As<float>(), right.As<float>());
                 else
                     throw new Exception("Invalid Type");
             }
@@ -143,9 +147,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseComparisonTerm();
                     if (left is IExpression<int>)
-                        return new IntGreaterThanExpression((IExpression<int>)left, (IExpression<int>)right);
+                        return new IntGreaterThanExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatGreaterThanExpression((IExpression<float>)left, (IExpression<float>)right);
+                        return new FloatGreaterThanExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -153,9 +157,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseComparisonTerm();
                     if (left is IExpression<int>)
-                        return new IntLessThanExpression((IExpression<int>)left, (IExpression<int>)right);
+                        return new IntLessThanExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatLessThanExpression((IExpression<float>)left, (IExpression<float>)right);
+                        return new FloatLessThanExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -163,9 +167,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseComparisonTerm();
                     if (left is IExpression<int>)
-                        return new IntGreaterThanEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                        return new IntGreaterThanEqualsExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatGreaterThanEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                        return new FloatGreaterThanEqualsExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -173,9 +177,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseComparisonTerm();
                     if (left is IExpression<int>)
-                        return new IntLessThanEqualsExpression((IExpression<int>)left, (IExpression<int>)right);
+                        return new IntLessThanEqualsExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatLessThanEqualsExpression((IExpression<float>)left, (IExpression<float>)right);
+                        return new FloatLessThanEqualsExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -197,9 +201,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseTerm();
                     if (left is IExpression<int>)
-                        return new IntAdditionExpression((IExpression<int>)left, (IExpression<int>)right);
+                        left = new IntAdditionExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatAdditionExpression((IExpression<float>)left, (IExpression<float>)right);
+                        left = new FloatAdditionExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -207,9 +211,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseTerm();
                     if (left is IExpression<int>)
-                        return new IntSubtractionExpression((IExpression<int>)left, (IExpression<int>)right);
+                        left = new IntSubtractionExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatSubtractionExpression((IExpression<float>)left, (IExpression<float>)right);
+                        left = new FloatSubtractionExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -230,9 +234,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseFactor();
                     if (left is IExpression<int>)
-                        return new IntMultiplicationExpression((IExpression<int>)left, (IExpression<int>)right);
+                        left = new IntMultiplicationExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatMultiplicationExpression((IExpression<float>)left, (IExpression<float>)right);
+                        left = new FloatMultiplicationExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -240,9 +244,9 @@ namespace ExpressionLang.Compiler
                 {
                     Expression right = ParseFactor();
                     if (left is IExpression<int>)
-                        return new IntDivisionExpression((IExpression<int>)left, (IExpression<int>)right);
+                        left = new IntDivisionExpression(left.As<int>(), right.As<int>());
                     else if (left is IExpression<float>)
-                        return new FloatDivisionExpression((IExpression<float>)left, (IExpression<float>)right);
+                        left = new FloatDivisionExpression(left.As<float>(), right.As<float>());
                     else
                         throw new Exception("Invalid type");
                 }
@@ -274,7 +278,10 @@ namespace ExpressionLang.Compiler
             }
             else if (Accept(TokenType.Ident, out token))
             {
-                throw new NotImplementedException();
+                if (Variables.TryGetValue(token.Text, out float val))
+                    return new FloatLiteralExpression(new FloatToken(val.ToString(), token.LineNumber, token.ColumnNumber));
+                else
+                    throw new Exception($"Invalid identifier {token.Text}");
             }
             else if (Accept(TokenType.OpenBracket))
             {

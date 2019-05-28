@@ -1,6 +1,7 @@
 ﻿using ExpressionLang.Compiler.Expressions;
 using ExpressionLang.Tokenizer;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -11,7 +12,9 @@ namespace ExpressionLang.Tests
         static void Main(string[] args)
         {
             // Test stream
-            string test = "(10 + 10) / 10";
+            // Foo = 10.5
+            // Bar = 20
+            string test = "foo + 10 > 20";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 
@@ -49,11 +52,15 @@ namespace ExpressionLang.Tests
             foreach (IToken token in Tokenizer.Tokens)
                 Console.WriteLine($"{token.TokenType}, {token.Text}, {token.LineNumber}:{token.ColumnNumber}");
 
+            Dictionary<string, float> vars = new Dictionary<string, float>();
+            vars.Add("foo", 10.5f);
+            vars.Add("bar", 20);
+
             Compiler.Compiler compiler = new Compiler.Compiler();
-            Expression expr = compiler.Compile(Tokenizer.Tokens);
+            Expression expr = compiler.Compile(Tokenizer.Tokens, vars);
 
             Console.WriteLine();
-            Console.WriteLine($"Expression Output: {(expr as IExpression<int>).Evaluate()}");
+            Console.WriteLine($"Expression Output: {(expr as IExpression<bool>).Evaluate()}");
 
             Console.ReadLine();
         }

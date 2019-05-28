@@ -11,5 +11,7 @@ namespace ExpressionLang.Compiler.Expressions
 
         internal int EndLine;
         internal int EndColumn;
+
+        public abstract IExpression<T> As<T>();
     }
 }

@@ -19,5 +19,10 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
         {
             return Left.Evaluate() || Right.Evaluate();
         }
+
+        public override IExpression<T> As<T>()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

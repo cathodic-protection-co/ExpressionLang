@@ -21,12 +21,24 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
     public class IntLessThanEqualsExpression : LessThanEqualsExpression<int>
     {
         public IntLessThanEqualsExpression(IExpression<int> left, IExpression<int> right) : base(left, right) { }
+
+        public override IExpression<T> As<T>()
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Evaluate() => Left.Evaluate() <= Right.Evaluate();
     }
 
     public class FloatLessThanEqualsExpression : LessThanEqualsExpression<float>
     {
         public FloatLessThanEqualsExpression(IExpression<float> left, IExpression<float> right) : base(left, right) { }
+
+        public override IExpression<T> As<T>()
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Evaluate() => Left.Evaluate() <= Right.Evaluate();
     }
 }

@@ -11,6 +11,11 @@ namespace ExpressionLang.Compiler.Expressions
             // Something
         }
 
+        public override IExpression<T> As<T>()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Evaluate()
         {
             throw new NotImplementedException();
