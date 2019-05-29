@@ -14,8 +14,8 @@ namespace ExpressionLang.Compiler
     public class Compiler
     {
         private Stack<IToken> Tokens;
-        private ICollection<Variable> Variables;
-        public Expression Compile(ICollection<IToken> tokens, ICollection<Variable> variables)
+        private IDictionary<string, Variable> Variables;
+        public Expression Compile(ICollection<IToken> tokens, IDictionary<string, Variable> variables)
         {
             Tokens = new Stack<IToken>(tokens.Reverse());
             Variables = variables;
@@ -288,7 +288,7 @@ namespace ExpressionLang.Compiler
             else if (Accept(TokenType.Ident, out token))
             {
                 Variable variable;
-                if ((variable = Variables.FirstOrDefault(x => x.Identifier == token.Text)) != null)
+                if ((variable = Variables.FirstOrDefault(x => x.Key == token.Text).Value) != null)
                 {
                     if (variable is FloatVariable)
                         return new FloatLiteralExpression((variable as FloatVariable).Value, token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber);

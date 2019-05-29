@@ -15,7 +15,7 @@ namespace ExpressionLang.Tests
             // Test stream
             // Foo = 10.5
             // Bar = 20
-            string test = "(foo == bar) == true";
+            string test = "(foo == bar) == false";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 
@@ -55,10 +55,12 @@ namespace ExpressionLang.Tests
             foreach (IToken token in Tokenizer.Tokens)
                 Console.WriteLine($"{token.TokenType}, {token.Text}, {token.LineNumber}:{token.ColumnNumber}");
 
-            List<Variable> vars = new List<Variable>();
-            vars.Add(new BoolVariable("foobar", true));
-            vars.Add(new FloatVariable("foo", 10.5f));
-            vars.Add(new FloatVariable("bar", 20));
+            Dictionary<string, Variable> vars = new Dictionary<string, Variable>
+            {
+                { "foobar", new BoolVariable("foobar", true) },
+                { "foo", new FloatVariable("foo", 10.5f) },
+                { "bar", new FloatVariable("bar", 20) }
+            };
 
             Compiler.Compiler compiler = new Compiler.Compiler();
             Expression expr = compiler.Compile(Tokenizer.Tokens, vars);
