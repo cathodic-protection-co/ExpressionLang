@@ -15,7 +15,7 @@ namespace ExpressionLang.Tests
             // Test stream
             // Foo = 10.5
             // Bar = 20
-            string test = "(foo == bar) == false";
+            string test = "foobar == true";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 

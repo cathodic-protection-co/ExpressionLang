@@ -292,7 +292,7 @@ namespace ExpressionLang.Compiler
                 {
                     if (variable is FloatVariable)
                         return new FloatLiteralExpression((variable as FloatVariable).Value, token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber);
-                    else if (variable is FloatVariable)
+                    else if (variable is BoolVariable)
                         return new BoolLiteralExpression((variable as BoolVariable).Value, token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber);
                     else
                         throw new Exception($"Invalid variable type {variable.GetType()}");
