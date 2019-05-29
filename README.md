@@ -3,6 +3,13 @@ A VERY Basic language for evaluating expressions.
 
 ## Syntax
 > This syntax is for the example / test project, any syntax (tokens) can be defined within the tokenizer.
+
+### Boolean
+Token | Operation
+----- | ---------
+"true"| Boolean True
+"false"| Boolean False
+
 ### Logical
 Token | Operation
 ----- | ---------
