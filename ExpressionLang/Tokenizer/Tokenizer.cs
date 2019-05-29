@@ -68,6 +68,8 @@ namespace ExpressionLang.Tokenizer
                         return new IntToken(buffer, lineNumber, columnNumber);
                     case TokenType.Float:
                         return new FloatToken(buffer, lineNumber, columnNumber);
+                    case TokenType.Bool:
+                        return new BoolToken(buffer, lineNumber, columnNumber);
                     case TokenType.Ident:
                         return new IdentToken(buffer, lineNumber, columnNumber);
 

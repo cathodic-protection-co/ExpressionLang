@@ -13,6 +13,7 @@ namespace ExpressionLang.Tokenizer
         Ident,
         Int,
         Float,
+        Bool,
         LogicalOr,
         LogicalAnd,
         Equals,

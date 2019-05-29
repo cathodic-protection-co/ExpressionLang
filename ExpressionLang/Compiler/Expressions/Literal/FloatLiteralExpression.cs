@@ -10,12 +10,18 @@ namespace ExpressionLang.Compiler.Expressions.Literal
     {
         private float Value { get; }
 
+        /// <summary>
+        /// Constructor used for literals (not variables).
+        /// </summary>
         public FloatLiteralExpression(IToken token)
             : base (token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber)
         {
             Value = float.Parse(token.Text);
         }
 
+        /// <summary>
+        /// Constructor used for variable identifiers.
+        /// </summary>
         public FloatLiteralExpression(float val, int startLine, int startColumn, int endLine, int endColumn)
             : base (startLine, startColumn, endLine, endColumn)
         {

@@ -14,8 +14,8 @@ namespace ExpressionLang.Compiler
     public class Compiler
     {
         private Stack<IToken> Tokens;
-        private IDictionary<string, float> Variables;
-        public Expression Compile(ICollection<IToken> tokens, IDictionary<string, float> variables)
+        private ICollection<Variable> Variables;
+        public Expression Compile(ICollection<IToken> tokens, ICollection<Variable> variables)
         {
             Tokens = new Stack<IToken>(tokens.Reverse());
             Variables = variables;
@@ -120,8 +120,10 @@ namespace ExpressionLang.Compiler
                     return new IntEqualsExpression(left.As<int>(), right.As<int>());
                 else if (left is IExpression<float>)
                     return new FloatEqualsExpression(left.As<float>(), right.As<float>());
+                else if (left is IExpression<bool>)
+                    return new BoolEqualsExpression(left.As<bool>(), right.As<bool>());
                 else
-                    throw new Exception($"Can't divide type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
+                    throw new Exception($"Can't compare type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
             }
             else if(Accept(TokenType.NotEquals))
             {
@@ -130,8 +132,10 @@ namespace ExpressionLang.Compiler
                     return new IntNotEqualsExpression(left.As<int>(), right.As<int>());
                 else if (left is IExpression<float>)
                     return new FloatNotEqualsExpression(left.As<float>(), right.As<float>());
+                else if (left is IExpression<bool>)
+                    return new BoolNotEqualsExpression(left.As<bool>(), right.As<bool>());
                 else
-                    throw new Exception($"Can't divide type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
+                    throw new Exception($"Can't compare type {left.GetType()} and {right.GetType()} ({left.StartLine}:{left.StartColumn}-{right.EndLine}:{right.EndColumn})");
             }
             else
             {
@@ -277,12 +281,26 @@ namespace ExpressionLang.Compiler
             {
                 return new FloatLiteralExpression(token);
             }
+            else if (Accept(TokenType.Bool, out token))
+            {
+                return new BoolLiteralExpression(token);
+            }
             else if (Accept(TokenType.Ident, out token))
             {
-                if (Variables.TryGetValue(token.Text, out float val))
-                    return new FloatLiteralExpression(new FloatToken(val.ToString(), token.LineNumber, token.ColumnNumber));
+                Variable variable;
+                if ((variable = Variables.FirstOrDefault(x => x.Identifier == token.Text)) != null)
+                {
+                    if (variable is FloatVariable)
+                        return new FloatLiteralExpression((variable as FloatVariable).Value, token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber);
+                    else if (variable is FloatVariable)
+                        return new BoolLiteralExpression((variable as BoolVariable).Value, token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber);
+                    else
+                        throw new Exception($"Invalid variable type {variable.GetType()}");
+                }
                 else
+                {
                     throw new Exception($"Invalid identifier {token.Text}");
+                }
             }
             else if (Accept(TokenType.OpenBracket))
             {

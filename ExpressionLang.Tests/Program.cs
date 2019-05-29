@@ -1,4 +1,5 @@
-﻿using ExpressionLang.Compiler.Expressions;
+﻿using ExpressionLang.Compiler;
+using ExpressionLang.Compiler.Expressions;
 using ExpressionLang.Tokenizer;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace ExpressionLang.Tests
             // Test stream
             // Foo = 10.5
             // Bar = 20
-            string test = "10 + 10 == 20";
+            string test = "(foo == bar) == true";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 
@@ -28,6 +29,8 @@ namespace ExpressionLang.Tests
             Tokenizer.AddTokenDefinition(TokenType.LogicalOr, @"or");
             Tokenizer.AddTokenDefinition(TokenType.LogicalAnd, @"&&");
             Tokenizer.AddTokenDefinition(TokenType.LogicalAnd, @"and");
+            Tokenizer.AddTokenDefinition(TokenType.Bool, "true|TRUE|True");
+            Tokenizer.AddTokenDefinition(TokenType.Bool, "false|FALSE|False");
             Tokenizer.AddTokenDefinition(TokenType.Ident, "[a-zA-Z][a-zA-Z0-9]+");
             //Tokenizer.AddTokenDefinition(TokenType.Int, "(-)?[0-9]+");
             Tokenizer.AddTokenDefinition(TokenType.Float, @"(-)?[0-9]+(\.[0-9]+)?(e\+[0-9]+)?");
@@ -52,9 +55,10 @@ namespace ExpressionLang.Tests
             foreach (IToken token in Tokenizer.Tokens)
                 Console.WriteLine($"{token.TokenType}, {token.Text}, {token.LineNumber}:{token.ColumnNumber}");
 
-            Dictionary<string, float> vars = new Dictionary<string, float>();
-            vars.Add("foo", 10.5f);
-            vars.Add("bar", 20);
+            List<Variable> vars = new List<Variable>();
+            vars.Add(new BoolVariable("foobar", true));
+            vars.Add(new FloatVariable("foo", 10.5f));
+            vars.Add(new FloatVariable("bar", 20));
 
             Compiler.Compiler compiler = new Compiler.Compiler();
             Expression expr = compiler.Compile(Tokenizer.Tokens, vars);

@@ -10,12 +10,18 @@ namespace ExpressionLang.Compiler.Expressions.Literal
     {
         private int Value { get; }
 
+        /// <summary>
+        /// Constructor used for literals (not variables).
+        /// </summary>
         public IntLiteralExpression(IToken token)
             : base (token.LineNumber, token.ColumnNumber, token.LineNumber, token.ColumnNumber)
         {
             Value = int.Parse(token.Text);
         }
 
+        /// <summary>
+        /// Constructor used for variable identifiers.
+        /// </summary>
         public IntLiteralExpression(int val, int startLine, int startColumn, int endLine, int endColumn)
             : base (startLine, startColumn, endLine, endColumn)
         {

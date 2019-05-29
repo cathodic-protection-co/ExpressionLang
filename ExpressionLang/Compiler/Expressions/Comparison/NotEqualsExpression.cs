@@ -48,4 +48,19 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
 
         public override bool Evaluate() => Left.Evaluate() != Right.Evaluate();
     }
+
+    public class BoolNotEqualsExpression : NotEqualsExpression<bool>
+    {
+        public BoolNotEqualsExpression(IExpression<bool> left, IExpression<bool> right) : base(left, right) { }
+
+        public override IExpression<T> As<T>()
+        {
+            if (typeof(T) != typeof(bool))
+                throw new Exception($"Can't cast from bool to {typeof(T)} ({StartLine}:{StartColumn}-{EndLine}:{EndColumn})");
+            else
+                return (IExpression<T>)this;
+        }
+
+        public override bool Evaluate() => Left.Evaluate() != Right.Evaluate();
+    }
 }
