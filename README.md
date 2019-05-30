@@ -35,13 +35,24 @@ Token | Operation
 "/"   | Division
 "%"   | Modulo
 
+## Variables
+Variables can be added by passing a dictionary of "variables" to the compiler.
+```C#
+Dictionary<string, Variable> vars = new Dictionary<string, Variable>
+{
+    { "foobar", new BoolVariable("foobar", true) },
+    { "foo", new FloatVariable("foo", 10.5f) },
+    { "bar", new FloatVariable("bar", 20) }
+};
+```
+
 ## Auto casting
 Expressions will be left-hand auto-casted.
-```
+```C#
 10 + 10.5 == 20
 ```
 > Evaluates to true.
-```
+```C#
 10.5 + 10 == 20
 ```
 > Evaluates to false.
