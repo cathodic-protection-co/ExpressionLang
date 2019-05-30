@@ -6,20 +6,21 @@ namespace ExpressionLang.Compiler.Expressions.Comparison
 {
     public class NotExpression : UnaryExpression, IExpression<bool>
     {
-        public NotExpression(Expression expression)
+        private IExpression<bool> Right { get; set; }
+        public NotExpression(IExpression<bool> expression)
             : base(0, 0, 0, 0)
         {
-            // Something
+            Right = expression;
         }
 
         public override IExpression<T> As<T>()
         {
-            throw new NotImplementedException();
+            if (typeof(T) != typeof(bool))
+                throw new Exception($"Can't cast from bool to {typeof(T)} ({StartLine}:{StartColumn}-{EndLine}:{EndColumn})");
+            else
+                return (IExpression<T>)this;
         }
 
-        public bool Evaluate()
-        {
-            throw new NotImplementedException();
-        }
+        public bool Evaluate() => !Right.Evaluate();
     }
 }

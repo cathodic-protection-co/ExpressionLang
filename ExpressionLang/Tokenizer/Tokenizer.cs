@@ -79,6 +79,7 @@ namespace ExpressionLang.Tokenizer
                     case TokenType.Multiplication:
                     case TokenType.Division:
                     case TokenType.Modulo:
+                    case TokenType.Not:
                         return new OperatorToken(buffer, lineNumber, columnNumber, (TokenType)pair?.Value.TokenType);
 
                     // Comparitors

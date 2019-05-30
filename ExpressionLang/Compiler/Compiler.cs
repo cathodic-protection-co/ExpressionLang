@@ -266,7 +266,7 @@ namespace ExpressionLang.Compiler
         Expression ParseFactor()
         {
             if (Accept(TokenType.Not))
-                return new NotExpression(ParseAtom());
+                return new NotExpression((IExpression<bool>)ParseAtom());
             else
                 return ParseAtom();
         }
