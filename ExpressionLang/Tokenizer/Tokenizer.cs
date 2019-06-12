@@ -22,6 +22,8 @@ namespace ExpressionLang.Tokenizer
 
         public void Tokenize(Stream stream)
         {
+            Tokens.Clear();
+
             IToken token;
             using (var reader = new StreamReader(stream))
                 while ((token = MatchLongest(reader, "")).TokenType != TokenType.EndOfFile)
@@ -41,13 +43,20 @@ namespace ExpressionLang.Tokenizer
             columnNumber += 1;
 
             // Try to match 
-            var pair = Match(buffer);
+            var pair = Match(reader, buffer);
 
             // Try to match the next one along too
             string temp = buffer;
             temp += (char)reader.Peek();
 
-            if (Match(temp) != null)
+            // Float edgecase
+            if (temp[temp.Length - 1] == '.')
+            {
+                reader.Read();
+                temp += (char)reader.Peek();
+            }
+
+            if (Match(reader, temp) != null)
             {
                 // Can match to longer, so recurse
                 return MatchLongest(reader, buffer);                                // Recurse (carry buffer / same token)
@@ -106,7 +115,7 @@ namespace ExpressionLang.Tokenizer
             }
         }
 
-        private KeyValuePair<Match, TokenDefinition>? Match(string buffer)
+        private KeyValuePair<Match, TokenDefinition>? Match(StreamReader reader, string buffer)
         {
             foreach (TokenDefinition tokenDefinition in TokenDefinitions)
             {

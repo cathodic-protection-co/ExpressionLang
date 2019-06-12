@@ -3,6 +3,7 @@ using ExpressionLang.Compiler.Expressions;
 using ExpressionLang.Tokenizer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -15,7 +16,7 @@ namespace ExpressionLang.Tests
             // Test stream
             // Foo = 10.5
             // Bar = 20
-            string test = "10 > 5 != !foobar";
+            string test = "10.121 + 20 > 30.122";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 
@@ -49,11 +50,14 @@ namespace ExpressionLang.Tests
             Tokenizer.AddTokenDefinition(TokenType.OpenBracket, @"\(");
             Tokenizer.AddTokenDefinition(TokenType.CloseBracket, @"\)");
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             Tokenizer.Tokenize(stream);
+            long tokenizerMs = sw.ElapsedMilliseconds;
 
             // Tokenizer debug output
-            foreach (IToken token in Tokenizer.Tokens)
-                Console.WriteLine($"{token.TokenType}, {token.Text}, {token.LineNumber}:{token.ColumnNumber}");
+            //foreach (IToken token in Tokenizer.Tokens)
+            //    Console.WriteLine($"{token.TokenType}, {token.Text}, {token.LineNumber}:{token.ColumnNumber}");
 
             Dictionary<string, Variable> vars = new Dictionary<string, Variable>
             {
@@ -63,10 +67,14 @@ namespace ExpressionLang.Tests
             };
 
             Compiler.Compiler compiler = new Compiler.Compiler();
+            sw.Restart();
             Expression expr = compiler.Compile(Tokenizer.Tokens, vars);
+            long compilerMs = sw.ElapsedMilliseconds;
+            sw.Stop();
 
-            Console.WriteLine();
-            Console.WriteLine($"Expression Output: {(expr as IExpression<bool>).Evaluate()}");
+            Console.WriteLine($"Tokenized in {tokenizerMs}ms");
+            Console.WriteLine($"Compiled in {compilerMs}ms");
+            Console.WriteLine($"Result: {(expr as IExpression<bool>).Evaluate()}");
 
             Console.ReadLine();
         }
