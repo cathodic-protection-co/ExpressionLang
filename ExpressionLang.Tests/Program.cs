@@ -16,7 +16,7 @@ namespace ExpressionLang.Tests
             // Test stream
             // Foo = 10.5
             // Bar = 20
-            string test = "10.121 + 20 > 30.122";
+            string test = "50 > 49.5 and 50 < 50.5";
             byte[] byteArray = Encoding.ASCII.GetBytes(test);
             MemoryStream stream = new MemoryStream(byteArray);
 

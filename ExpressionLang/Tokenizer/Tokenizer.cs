@@ -54,6 +54,9 @@ namespace ExpressionLang.Tokenizer
             {
                 reader.Read();
                 temp += (char)reader.Peek();
+
+                if (Match(reader, temp) != null)
+                    return MatchLongest(reader, temp);
             }
 
             if (Match(reader, temp) != null)
